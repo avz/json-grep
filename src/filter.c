@@ -163,14 +163,9 @@ static void filter_fillPathFromString(struct Filter *filter, const unsigned char
 		if(*cur == '.') {
 			if(cur - segmentStart == 1 && *segmentStart == '*') {
 				filter->path[segmentOffset].isAny = 1;
-				printf("segment: *\n");
 			} else {
 				filter->path[segmentOffset].name = segmentStart;
 				filter->path[segmentOffset].nameLen = (size_t)(cur - segmentStart);
-
-				printf("segment: \"");
-				fwrite(filter->path[segmentOffset].name, filter->path[segmentOffset].nameLen, 1, stdout);
-				printf("\" [%d]\n", (int)filter->path[segmentOffset].nameLen);
 			}
 
 			segmentStart = pathString + i + 1;
