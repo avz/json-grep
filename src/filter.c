@@ -107,7 +107,7 @@ static int onNull(void *filterPtr) {
 	if(filter->lastMatchedPathLevel != filter->pathSize - 1)
 		return 0;
 
-	if(filter->anyValue || (filter->valueLen == 4 && memcmp(filter->value, "null", 4) == 0))
+	if(filter->anyValue || filter->valueIsNull)
 		filter->currentItemMatched = 1;
 
 	return 0;
