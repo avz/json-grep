@@ -9,6 +9,9 @@
 #define ERROR_COLON_EXPECTED 4
 
 struct ParserHandlers {
+	int (*onStart)(void *arg);
+	void *onStartArg;
+
 	int (*onBool)(void *arg, char bool);
 	void *onBoolArg;
 
@@ -30,7 +33,7 @@ struct ParserHandlers {
 	int (*onMapStart)(void *arg);
 	void *onMapStartArg;
 
-	int (*onMapKey)(void *arg, const unsigned char *string, size_t len);
+	int (*onMapKey)(void *arg, const unsigned char *key, size_t len);
 	void *onMapKeyArg;
 
 	int (*onMapEnd)(void *arg);
