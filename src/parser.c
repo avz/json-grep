@@ -162,6 +162,8 @@ static int parser_readList(struct Parser *parser) {
 			if(parser->handlers.onListEnd)
 				parser->handlers.onListEnd(parser->handlers.onListEndArg);
 
+			parser->cur++;
+
 			return 0;
 		}
 
@@ -187,6 +189,8 @@ static int parser_readMap(struct Parser *parser) {
 	if(*parser->cur == '}') {
 		if(parser->handlers.onMapEnd)
 			parser->handlers.onMapEnd(parser->handlers.onMapEndArg);
+
+		parser->cur++;
 
 		return 0;
 	}
