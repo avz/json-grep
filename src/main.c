@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 	if(!hasEqualsFilter)
 		filter_exists(&f, (unsigned char *)argv[1], strlen(argv[1]));
 
-	unsigned char buf[8 * 1024];
+	unsigned char buf[64 * 1024];
 	ssize_t bufStart = 0;
 	ssize_t bufEnd = 0;
 	ssize_t readed;
