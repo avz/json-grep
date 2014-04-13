@@ -71,7 +71,7 @@ static int onScalar(void *filterPtr, const unsigned char *string, size_t len) {
 	if(filter->lastMatchedPathLevel != filter->pathSize - 1)
 		return 0;
 
-	if(filter->anyValue || (filter->valueLen == len && memcmp(filter->value, string, len) == 0))
+	if(filter->anyValue || filter->valueIsNull)
 		filter->currentItemMatched = 1;
 
 	return 0;
@@ -89,13 +89,8 @@ static int onBool(void *filterPtr, char b) {
 	if(filter->lastMatchedPathLevel != filter->pathSize - 1)
 		return 0;
 
-	if(b) {
-		if(filter->anyValue || (filter->valueLen == 4 && memcmp(filter->value, "true", 4) == 0))
-			filter->currentItemMatched = 1;
-	} else {
-		if(filter->anyValue || (filter->valueLen == 5 && memcmp(filter->value, "false", 5) == 0))
-			filter->currentItemMatched = 1;
-	}
+	if(filter->anyValue || (b && filter->valueIsTrue) || (!b && filter->valueIsFalse))
+		filter->currentItemMatched = 1;
 
 	return 0;
 }
@@ -250,6 +245,15 @@ void filter_equals(struct Filter *filter, const unsigned char *pathString, size_
 
 	filter->value = value;
 	filter->valueLen = valueLen;
+
+	if(filter->valueLen == 4 && memcmp(value, "null", 4) == 0)
+		filter->valueIsNull = 1;
+
+	if(filter->valueLen == 4 && memcmp(value, "true", 4) == 0)
+		filter->valueIsTrue = 1;
+
+	if(filter->valueLen == 5 && memcmp(value, "false", 5) == 0)
+		filter->valueIsFalse = 1;
 }
 
 void filter_exists(struct Filter *filter, const unsigned char *pathString, size_t pathStringLen) {

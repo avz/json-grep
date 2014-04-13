@@ -17,6 +17,10 @@ struct Filter {
 	const unsigned char *value;
 	size_t valueLen;
 
+	char valueIsTrue;
+	char valueIsFalse;
+	char valueIsNull;
+
 	int currentPathLevel;
 	int lastMatchedPathLevel;
 
