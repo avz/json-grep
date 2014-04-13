@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 
 #include "parser.h"
 
@@ -100,6 +101,8 @@ static int parser_readBool(struct Parser *parser) {
 			if(parser->handlers.onBool)
 				parser->handlers.onBool(parser->handlers.onBoolArg, 1);
 
+			parser->cur += 4;
+
 			return 0;
 		}
 
@@ -110,6 +113,8 @@ static int parser_readBool(struct Parser *parser) {
 		if(parser->cur[1] == 'a' && parser->cur[2] == 'l' && parser->cur[3] == 's' && parser->cur[4] == 'e') {
 			if(parser->handlers.onBool)
 				parser->handlers.onBool(parser->handlers.onBoolArg, 0);
+
+			parser->cur += 5;
 
 			return 0;
 		}
@@ -125,6 +130,8 @@ static int parser_readNull(struct Parser *parser) {
 	if(parser->cur[1] == 'u' && parser->cur[2] == 'l' && parser->cur[3] == 'l') {
 		if(parser->handlers.onNull)
 			parser->handlers.onNull(parser->handlers.onNullArg);
+
+		parser->cur += 4;
 
 		return 0;
 	}
