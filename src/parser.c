@@ -74,7 +74,7 @@ static int parser_readString(struct Parser *parser) {
 	return 0;
 }
 
-static int parser_readHashKey(struct Parser *parser) {
+static int parser_readMapKey(struct Parser *parser) {
 	const unsigned char *start = parser->cur + 1;
 	int err;
 
@@ -85,8 +85,8 @@ static int parser_readHashKey(struct Parser *parser) {
 	if(err)
 		return err;
 
-	if(parser->handlers.onHashKey)
-		parser->handlers.onHashKey(parser->handlers.onHashKeyArg, start, (size_t)(parser->cur - 1 - start));
+	if(parser->handlers.onMapKey)
+		parser->handlers.onMapKey(parser->handlers.onMapKeyArg, start, (size_t)(parser->cur - 1 - start));
 
 	return 0;
 }
@@ -172,19 +172,19 @@ static int parser_readList(struct Parser *parser) {
 	return ERROR_UNEXPECTED_EOD;
 }
 
-static int parser_readHash(struct Parser *parser) {
+static int parser_readMap(struct Parser *parser) {
 	int err;
 
-	if(parser->handlers.onHashStart)
-		parser->handlers.onHashStart(parser->handlers.onHashStartArg);
+	if(parser->handlers.onMapStart)
+		parser->handlers.onMapStart(parser->handlers.onMapStartArg);
 
 	parser->cur++;
 
 	parser_earnSpaces(parser);
 
 	if(*parser->cur == '}') {
-		if(parser->handlers.onHashEnd)
-			parser->handlers.onHashEnd(parser->handlers.onHashEndArg);
+		if(parser->handlers.onMapEnd)
+			parser->handlers.onMapEnd(parser->handlers.onMapEndArg);
 		return 0;
 	}
 
@@ -192,7 +192,7 @@ static int parser_readHash(struct Parser *parser) {
 		if(*parser->cur != '"')
 			return ERROR_STRING_KEY_EXPECTED;
 
-		err = parser_readHashKey(parser);
+		err = parser_readMapKey(parser);
 		if(err)
 			return err;
 
@@ -210,8 +210,8 @@ static int parser_readHash(struct Parser *parser) {
 			return err;
 
 		if(*parser->cur == '}') {
-			if(parser->handlers.onHashEnd)
-				parser->handlers.onHashEnd(parser->handlers.onHashEndArg);
+			if(parser->handlers.onMapEnd)
+				parser->handlers.onMapEnd(parser->handlers.onMapEndArg);
 
 			return 0;
 		}
@@ -244,7 +244,7 @@ static int parser_readNextToken(struct Parser *parser) {
 			return parser_readList(parser);
 		break;
 		case '{':
-			return parser_readHash(parser);
+			return parser_readMap(parser);
 		break;
 		default:
 			if((*parser->cur >= '0' && *parser->cur <= '9') || *parser->cur == '-')

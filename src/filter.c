@@ -79,5 +79,5 @@ void filter_set(struct Filter *filter, const unsigned char *pathString, size_t p
 }
 
 void filter_initParserHandlers(struct Filter *filter) {
-	
+
 }

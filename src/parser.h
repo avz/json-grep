@@ -27,14 +27,14 @@ struct ParserHandlers {
 	int (*onListEnd)(void *arg);
 	void *onListEndArg;
 
-	int (*onHashStart)(void *arg);
-	void *onHashStartArg;
+	int (*onMapStart)(void *arg);
+	void *onMapStartArg;
 
-	int (*onHashKey)(void *arg, const unsigned char *string, size_t len);
-	void *onHashKeyArg;
+	int (*onMapKey)(void *arg, const unsigned char *string, size_t len);
+	void *onMapKeyArg;
 
-	int (*onHashEnd)(void *arg);
-	void *onHashEndArg;
+	int (*onMapEnd)(void *arg);
+	void *onMapEndArg;
 };
 
 struct Parser {

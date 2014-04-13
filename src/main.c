@@ -11,7 +11,7 @@
 
 int indent = 0;
 int isFirstItem = 0;
-int inListOrHash = 0;
+int inListOrMap = 0;
 
 void makeIndent() {
 	int i;
@@ -78,7 +78,7 @@ int onListEnd(void *a) {
 	return 0;
 }
 
-int onHashStart(void *a) {
+int onMapStart(void *a) {
 	makeIndent();
 
 	printf("{\n");
@@ -88,7 +88,7 @@ int onHashStart(void *a) {
 	return 0;
 }
 
-int onHashKey(void *a, const unsigned char *string, size_t len) {
+int onMapKey(void *a, const unsigned char *string, size_t len) {
 	makeIndent();
 
 	printf("\"");
@@ -98,7 +98,7 @@ int onHashKey(void *a, const unsigned char *string, size_t len) {
 	return 0;
 }
 
-int onHashEnd(void *a) {
+int onMapEnd(void *a) {
 	makeIndent();
 
 	printf("}\n");
@@ -136,9 +136,9 @@ int main(int argc, char** argv) {
 	parser.handlers.onNumber = onNumber;
 	parser.handlers.onListStart = onListStart;
 	parser.handlers.onListEnd = onListEnd;
-	parser.handlers.onHashStart = onHashStart;
-	parser.handlers.onHashEnd = onHashEnd;
-	parser.handlers.onHashKey = onHashKey;
+	parser.handlers.onMapStart = onMapStart;
+	parser.handlers.onMapEnd = onMapEnd;
+	parser.handlers.onMapKey = onMapKey;
 
 	while((readed = read(STDIN_FILENO, buf + bufEnd, sizeof(buf) - (size_t)bufEnd)) > 0) {
 		for(i = 0; i < readed; i++) {

@@ -14,7 +14,8 @@ struct Filter {
 	const unsigned char *value;
 	size_t valueLen;
 
-
+	int currentPathLevel;
+	int lastMatchedPathLevel;
 };
 
 void filter_init(struct Filter *filter);
