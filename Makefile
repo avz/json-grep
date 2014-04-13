@@ -14,7 +14,7 @@ $(PROJECT): $(OBJS)
 	$(LD) -lc $(LDFLAGS) $(OBJS) -o "$(PROJECT)"
 
 .c.o:
-	$(CC) -c -g -Wall -Wconversion -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 $(CFLAGS) src/$*.c
+	$(CC) --std=c90 -c -g -Wall -Werror -Wconversion -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 $(CFLAGS) src/$*.c
 
 clean:
 	rm -f *.o "$(PROJECT)"

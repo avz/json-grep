@@ -4,12 +4,12 @@
 
 static int parser_readNextToken(struct Parser *parser);
 
-inline static void parser_earnSpaces(struct Parser *parser) {
+static void parser_earnSpaces(struct Parser *parser) {
 	while(parser->cur < parser->end && (*parser->cur == ' ' || *parser->cur == '\t'))
 		parser->cur++;
 }
 
-inline static int parser_walkOverCharWithEscaping(struct Parser *parser, unsigned char ch) {
+static int parser_walkOverCharWithEscaping(struct Parser *parser, unsigned char ch) {
 	char nextCharacterEscaped = 0;
 
 	while(parser->cur < parser->end) {
@@ -92,7 +92,7 @@ static int parser_readMapKey(struct Parser *parser) {
 }
 
 static int parser_readBool(struct Parser *parser) {
-	if(*parser->cur == 't') { // true
+	if(*parser->cur == 't') { /* true */
 		if(parser->end - parser->cur < 4)
 			return ERROR_UNEXPECTED_EOD;
 
@@ -103,7 +103,7 @@ static int parser_readBool(struct Parser *parser) {
 			return 0;
 		}
 
-	} else { // false
+	} else { /* false */
 		if(parser->end - parser->cur < 5)
 			return ERROR_UNEXPECTED_EOD;
 
@@ -185,6 +185,7 @@ static int parser_readMap(struct Parser *parser) {
 	if(*parser->cur == '}') {
 		if(parser->handlers.onMapEnd)
 			parser->handlers.onMapEnd(parser->handlers.onMapEndArg);
+
 		return 0;
 	}
 
@@ -202,8 +203,6 @@ static int parser_readMap(struct Parser *parser) {
 			return ERROR_COLON_EXPECTED;
 
 		parser->cur++;
-
-//		printf("Value: ");
 
 		err = parser_readNextToken(parser);
 		if(err)
