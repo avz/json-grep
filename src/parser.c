@@ -146,6 +146,8 @@ static int parser_readList(struct Parser *parser) {
 		if(parser->handlers.onListEnd)
 			parser->handlers.onListEnd(parser->handlers.onListEndArg);
 
+		parser->cur++;
+
 		return 0;
 	}
 
