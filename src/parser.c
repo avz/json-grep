@@ -214,6 +214,8 @@ static int parser_readMap(struct Parser *parser) {
 			if(parser->handlers.onMapEnd)
 				parser->handlers.onMapEnd(parser->handlers.onMapEndArg);
 
+			parser->cur++;
+
 			return 0;
 		}
 
