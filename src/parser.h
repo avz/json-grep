@@ -9,9 +9,6 @@
 #define ERROR_COLON_EXPECTED 4
 
 struct ParserHandlers {
-	int (*onStart)(void *arg);
-	void *onStartArg;
-
 	int (*onBool)(void *arg, char bool);
 	void *onBoolArg;
 

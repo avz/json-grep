@@ -274,12 +274,8 @@ int parser_parse(struct Parser *parser, unsigned char *buf, size_t len) {
 
 	parser->cur++;
 
-	if(len) {
-		if(parser->handlers.onStart)
-			parser->handlers.onStart(parser->handlers.onStartArg);
-
+	if(len)
 		parser_readNextToken(parser);
-	}
 
 	return 0;
 }
