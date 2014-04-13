@@ -15,11 +15,19 @@ struct FilterSegment {
 };
 
 
-static int onScopeStart(void *filter) {
-	if(((struct Filter *)filter)->currentItemMatched)
+static int onScopeStart(void *filterPtr) {
+	struct Filter *filter = (struct Filter *)filterPtr;
+	if(filter->currentItemMatched)
 		return 0;
 
-	((struct Filter *)filter)->currentPathLevel++;
+	if(filter->currentPathLevel == filter->lastMatchedPathLevel) {
+		if(filter->lastMatchedPathLevel + 1 < filter->pathSize) {
+			if(filter->path[filter->lastMatchedPathLevel + 1].isAny)
+				filter->lastMatchedPathLevel++;
+		}
+	}
+
+	filter->currentPathLevel++;
 
 	return 0;
 }
@@ -43,6 +51,9 @@ static int onMapKey(void *filterPtr, const unsigned char *key, size_t len) {
 	if(s->isAny || (s->nameLen == len && memcmp(s->name, key, len) == 0)) {
 		/* property name matched */
 		filter->lastMatchedPathLevel++;
+
+		if(filter->lastMatchedPathLevel + 1 == filter->pathSize && filter->anyValue)
+			filter->currentItemMatched = 1;
 	}
 
 	return 0;
@@ -119,8 +130,12 @@ char filter_test(struct Filter *filter, unsigned char *buf, size_t len) {
 
 	err = parser_parse(&filter->parser, buf, len);
 
-	if(err)
+	if(err) {
+		fprintf(stderr, "JSON parser error [%d] near: \"", err);
+		fwrite(filter->parser.cur, (size_t)(filter->parser.end - filter->parser.cur), 1, stderr);
+		fprintf(stderr, "\"\n");
 		return 0;
+	}
 
 	return filter->currentItemMatched;
 }
