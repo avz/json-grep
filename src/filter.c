@@ -115,7 +115,7 @@ char filter_test(struct Filter *filter, unsigned char *buf, size_t len) {
 
 	filter->currentItemMatched = 0;
 	filter->currentPathLevel = 0;
-	filter->currentPathLevel = 0;
+	filter->lastMatchedPathLevel = 0;
 
 	err = parser_parse(&filter->parser, buf, len);
 
