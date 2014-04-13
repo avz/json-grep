@@ -5,7 +5,7 @@
 static int parser_readNextToken(struct Parser *parser);
 
 static void parser_earnSpaces(struct Parser *parser) {
-	while(parser->cur < parser->end && (*parser->cur == ' ' || *parser->cur == '\t'))
+	while(parser->cur < parser->end && (*parser->cur == ' ' || *parser->cur == '\t' || *parser->cur == '\r'))
 		parser->cur++;
 }
 
@@ -190,6 +190,8 @@ static int parser_readMap(struct Parser *parser) {
 	}
 
 	while(parser->cur < parser->end) {
+		parser_earnSpaces(parser);
+
 		if(*parser->cur != '"')
 			return ERROR_STRING_KEY_EXPECTED;
 
