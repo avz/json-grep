@@ -71,7 +71,7 @@ static int onScalar(void *filterPtr, const unsigned char *string, size_t len) {
 	if(filter->lastMatchedPathLevel != filter->pathSize - 1)
 		return 0;
 
-	if(filter->anyValue || filter->valueIsNull)
+	if(filter->anyValue || (filter->valueLen == len && memcmp(filter->value, string , len) == 0))
 		filter->currentItemMatched = 1;
 
 	return 0;
