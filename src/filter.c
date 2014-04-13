@@ -77,6 +77,47 @@ static int onScalar(void *filterPtr, const unsigned char *string, size_t len) {
 	return 0;
 }
 
+static int onBool(void *filterPtr, char b) {
+	struct Filter *filter = (struct Filter *)filterPtr;
+
+	if(filter->currentItemMatched)
+		return 0;
+
+	if(filter->lastMatchedPathLevel != filter->currentPathLevel)
+		return 0;
+
+	if(filter->lastMatchedPathLevel != filter->pathSize - 1)
+		return 0;
+
+	if(b) {
+		if(filter->anyValue || (filter->valueLen == 4 && memcmp(filter->value, "true", 4) == 0))
+			filter->currentItemMatched = 1;
+	} else {
+		if(filter->anyValue || (filter->valueLen == 5 && memcmp(filter->value, "false", 5) == 0))
+			filter->currentItemMatched = 1;
+	}
+
+	return 0;
+}
+
+static int onNull(void *filterPtr) {
+	struct Filter *filter = (struct Filter *)filterPtr;
+
+	if(filter->currentItemMatched)
+		return 0;
+
+	if(filter->lastMatchedPathLevel != filter->currentPathLevel)
+		return 0;
+
+	if(filter->lastMatchedPathLevel != filter->pathSize - 1)
+		return 0;
+
+	if(filter->anyValue || (filter->valueLen == 4 && memcmp(filter->value, "null", 4) == 0))
+		filter->currentItemMatched = 1;
+
+	return 0;
+}
+
 static int onScopeEnd(void *filterPtr) {
 	struct Filter *filter = (struct Filter *)filterPtr;
 
@@ -119,6 +160,12 @@ void filter_init(struct Filter *filter) {
 
 	filter->parser.handlers.onNumber = onScalar;
 	filter->parser.handlers.onNumberArg = filter;
+
+	filter->parser.handlers.onBool = onBool;
+	filter->parser.handlers.onBoolArg = filter;
+
+	filter->parser.handlers.onNull = onNull;
+	filter->parser.handlers.onNullArg = filter;
 }
 
 char filter_test(struct Filter *filter, unsigned char *buf, size_t len) {
