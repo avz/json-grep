@@ -264,15 +264,6 @@ int parser_parse(struct Parser *parser, unsigned char *buf, size_t len) {
 	parser->end = buf + len;
 	parser->cur = buf;
 
-	while(parser->cur < parser->end) {
-		if(*parser->cur == ':')
-			break;
-
-		parser->cur++;
-	}
-
-	parser->cur++;
-
 	if(len)
 		parser_readNextToken(parser);
 
