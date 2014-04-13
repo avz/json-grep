@@ -269,7 +269,7 @@ int parser_parse(struct Parser *parser, unsigned char *buf, size_t len) {
 	parser->cur = buf;
 
 	if(len)
-		parser_readNextToken(parser);
+		return parser_readNextToken(parser);
 
 	return 0;
 }
