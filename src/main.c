@@ -32,42 +32,32 @@ int main(int argc, char** argv) {
 		filter_exists(&f, (unsigned char *)argv[1], strlen(argv[1]));
 
 	unsigned char buf[64 * 1024];
-	ssize_t bufStart = 0;
-	ssize_t bufEnd = 0;
+	unsigned char *bufEnd = buf + sizeof(buf);
+	unsigned char *bufHead = buf;
+	unsigned char *currentLineStart = buf;
 	ssize_t readed;
-	ssize_t i;
-	int matched;
 
-	int number = 0;
+	while((readed = read(STDIN_FILENO, bufHead, (size_t)(bufEnd - bufHead)))) {
+		unsigned char *pos = bufHead;
+		unsigned char *lineEnd;
+		unsigned char *chunkEnd = bufHead + readed;
 
-	while((readed = read(STDIN_FILENO, buf + bufEnd, sizeof(buf) - (size_t)bufEnd)) > 0) {
-		for(i = 0; i < readed; i++) {
-			if(buf[bufEnd] == '\n') {
-				ssize_t len = bufEnd - bufStart;
+		bufHead += readed;
 
-				matched = filter_test(&f, buf + bufStart, (size_t)len);
+		while((lineEnd = memchr(pos, '\n', (size_t)(chunkEnd - pos)))) {
+			pos = lineEnd + 1;
 
-				if(matched) {
-					fwrite(buf + bufStart, (size_t)len, 1, stdout);
-					printf("\n");
-				}
-
-				bufStart += len + 1;
-				number++;
+			if(filter_test(&f, currentLineStart, (size_t)(lineEnd - currentLineStart))) {
+				fwrite(currentLineStart, (size_t)(pos - currentLineStart), 1, stdout);
 			}
 
-			bufEnd++;
+			currentLineStart = pos;
 		}
 
-		if(bufEnd == sizeof(buf)) {
-			if(bufStart < bufEnd) {
-				memmove(buf, buf + bufStart, (size_t)(bufEnd - bufStart));
-				bufEnd -= bufStart;
-			} else {
-				bufEnd = 0;
-			}
-
-			bufStart = 0;
+		if(bufHead == bufEnd) {
+			memmove(buf, currentLineStart, (size_t)(bufEnd - currentLineStart));
+			bufHead = buf + (bufEnd - currentLineStart);
+			currentLineStart = buf;
 		}
 	}
 
